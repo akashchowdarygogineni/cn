@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to perform binary addition with carry wrap-around
+void addBinary(char a[], char b[], char result[]) {
+    int carry = 0;
+    int len = strlen(a);
+    int sum;
+    
+    for (int i = len - 1; i >= 0; i--) {
+        int bit1 = a[i] - '0';
+        int bit2 = b[i] - '0';
+        
+        sum = bit1 + bit2 + carry;
+        result[i] = (sum % 2) + '0';
+        carry = sum / 2;
+    }
+
+    // Handle carry wrap-around
+    while (carry != 0) {
+        for (int i = len - 1; i >= 0; i--) {
+            int bit = result[i] - '0';
+            sum = bit + (carry % 2);
+            result[i] = (sum % 2) + '0';
+            carry = sum / 2;
+        }
+    }
+
+    result[len] = '\0';
+}
+
+// Function to find 1's complement
+void onesComplement(char s[]) {
+    for (int i = 0; s[i] != '\0'; i++) {
+        s[i] = (s[i] == '0') ? '1' : '0';
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of data frames: ");
+    scanf("%d", &n);
+
+    char data[n][20];
+    printf("Enter the data frames (binary strings of equal length):\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%s", data[i]);
+    }
+
+    char sum[20];
+    strcpy(sum, data[0]);
+    char temp[20];
+
+    // Add all frames
+    for (int i = 1; i < n; i++) {
+        addBinary(sum, data[i], temp);
+        strcpy(sum, temp);
+    }
+
+    // Take 1's complement to get checksum
+    onesComplement(sum);
+
+    printf("\nChecksum = %s\n", sum);
+
+    // Receiver side: add checksum to all frames
+    strcpy(temp, data[0]);
+    for (int i = 1; i < n; i++) {
+        addBinary(temp, data[i], sum);
+        strcpy(temp, sum);
+    }
+    addBinary(temp, sum, sum);
+    onesComplement(sum);
+
+    // Verify for errors
+    if (strchr(sum, '1') == NULL)
+        printf("No Error — Data received correctly!\n");
+    else
+        printf("Error detected in data transmission!\n");
+
+    return 0;
+}
+//output
+Enter number of data frames: 3
+Enter the data frames (binary strings of equal length):
+10001101
+11010110
+10110101
+
+Checksum = 11100101
+Error detected in data transmission!
