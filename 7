@@ -1,0 +1,121 @@
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main() {
+    int total_frames, window_size;
+    int i, frame_ack[50];
+
+    srand(time(0)); // For random ACK simulation
+
+    printf("Enter the total number of frames: ");
+    scanf("%d", &total_frames);
+    printf("Enter the window size: ");
+    scanf("%d", &window_size);
+
+    // Initialize all acknowledgements to 0 (not received)
+    for (i = 0; i < total_frames; i++) {
+        frame_ack[i] = 0;
+    }
+
+    int sent = 0;
+
+    while (sent < total_frames) {
+        printf("\n\nSender: Sending frames from %d to %d\n", sent, sent + window_size - 1);
+
+        // Transmit frames in window
+        for (i = sent; i < sent + window_size && i < total_frames; i++) {
+            if (frame_ack[i] == 0) {
+                printf("Frame %d sent.\n", i);
+            }
+        }
+
+        // Simulate random ACK loss
+        for (i = sent; i < sent + window_size && i < total_frames; i++) {
+            if (frame_ack[i] == 0) {
+                int ack = rand() % 2; // 0 = lost, 1 = received
+                if (ack == 1) {
+                    printf("Receiver: ACK received for Frame %d\n", i);
+                    frame_ack[i] = 1;
+                } else {
+                    printf("Receiver: Frame %d lost or error occurred!\n", i);
+                }
+            }
+        }
+
+        // Move the window forward
+        while (sent < total_frames && frame_ack[sent] == 1)
+            sent++;
+
+        // Retransmit lost frames (Selective Repeat)
+        for (i = sent; i < sent + window_size && i < total_frames; i++) {
+            if (frame_ack[i] == 0) {
+                printf("Sender: Retransmitting Frame %d\n", i);
+            }
+        }
+    }
+
+    printf("\nAll frames transmitted successfully!\n");
+    return 0;
+}
+//output
+nter the total number of frames: 4
+Enter the window size: 3
+
+
+Sender: Sending frames from 0 to 2
+Frame 0 sent.
+Frame 1 sent.
+Frame 2 sent.
+Receiver: ACK received for Frame 0
+Receiver: Frame 1 lost or error occurred!
+Receiver: Frame 2 lost or error occurred!
+Sender: Retransmitting Frame 1
+Sender: Retransmitting Frame 2
+Sender: Retransmitting Frame 3
+
+
+Sender: Sending frames from 1 to 3
+Frame 1 sent.
+Frame 2 sent.
+Frame 3 sent.
+Receiver: Frame 1 lost or error occurred!
+Receiver: Frame 2 lost or error occurred!
+Receiver: Frame 3 lost or error occurred!
+Sender: Retransmitting Frame 1
+Sender: Retransmitting Frame 2
+Sender: Retransmitting Frame 3
+
+
+Sender: Sending frames from 1 to 3
+Frame 1 sent.
+Frame 2 sent.
+Frame 3 sent.
+Receiver: Frame 1 lost or error occurred!
+Receiver: ACK received for Frame 2
+Receiver: Frame 3 lost or error occurred!
+Sender: Retransmitting Frame 1
+Sender: Retransmitting Frame 3
+
+
+Sender: Sending frames from 1 to 3
+Frame 1 sent.
+Frame 3 sent.
+Receiver: Frame 1 lost or error occurred!
+Receiver: ACK received for Frame 3
+Sender: Retransmitting Frame 1
+
+
+Sender: Sending frames from 1 to 3
+Frame 1 sent.
+Receiver: Frame 1 lost or error occurred!
+Sender: Retransmitting Frame 1
+
+
+Sender: Sending frames from 1 to 3
+Frame 1 sent.
+Receiver: ACK received for Frame 1
+
+All frames transmitted successfully!
