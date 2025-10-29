@@ -1,0 +1,67 @@
+(iv) Analysis and Statistics & Filters
+Answer:
+
+Wireshark provides several tools and filters to analyze captured data.
+
+A. Analysis
+
+You can analyze:
+
+Network delays and packet loss
+
+TCP handshake or retransmissions
+
+Bandwidth usage
+
+Source and destination communication
+
+Wireshark highlights errors like checksum failure, retransmissions, and timeouts in the Info column.
+
+B. Statistics
+
+Wireshark offers a Statistics menu for summarizing data:
+
+Protocol Hierarchy:
+
+Shows the percentage of each protocol (e.g., TCP, UDP, HTTP).
+
+Conversations:
+
+Displays communication between two IP addresses.
+
+Endpoints:
+
+Lists all devices that participated in the communication.
+
+I/O Graphs:
+
+Shows packet traffic over time graphically.
+
+C. Filters
+
+Filters are used to display only specific packets from the capture.
+
+Filter	Description
+ip	Shows only IP packets
+tcp	Shows only TCP packets
+udp	Shows only UDP packets
+http	Shows HTTP traffic
+ip.addr == 192.168.1.10	Shows packets from/to a specific IP
+tcp.port == 80	Shows packets using port 80 (HTTP)
+
+Example:
+Typing http in the filter bar will display only HTTP-related packets.
+
+Result / Conclusion:
+
+Using Wireshark, we can successfully:
+
+Capture network packets
+
+View detailed traffic
+
+Apply filters for protocol-based analysis
+
+Generate statistics for understanding network performance
+
+Wireshark is an essential tool for network engineers, security analysts, and students to understand real-time communication.
